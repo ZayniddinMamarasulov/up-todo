@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:up_todo/screens/home_page.dart';
+import 'package:up_todo/screens/screen_1.dart';
+import 'package:up_todo/screens/widgets/add_task_widget.dart';
 import 'package:up_todo/utils/colors.dart';
 import 'package:up_todo/utils/images.dart';
 
@@ -14,16 +16,16 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  List<Widget> _pages = [
-    HomePage(),
-    Container(),
-    Container(),
-    Container(),
-    Container(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      HomePage(),
+      Screen1(),
+      Container(),
+      Container(),
+      Container(),
+    ];
+
     return Scaffold(
       body: _pages[_selectedIndex],
       backgroundColor: Colors.black,
@@ -111,35 +113,6 @@ class _MainPageState extends State<MainPage> {
           SizedBox(width: 12),
         ],
       ),
-      // floatingActionButton: Container(
-      //   padding: EdgeInsets.all(12),
-      //   decoration: BoxDecoration(
-      //     shape: BoxShape.circle,
-      //     gradient: LinearGradient(
-      //         begin: Alignment.topCenter,
-      //         end: Alignment.bottomCenter,
-      //         colors: [
-      //           Colors.transparent,
-      //           Colors.transparent,
-      //           Colors.black,
-      //         ]),
-      //   ),
-      //   child: Container(
-      //       height: 72,
-      //       decoration: BoxDecoration(
-      //         shape: BoxShape.circle,
-      //         color: AppColors.C_8687E7,
-      //       ),
-      //       child: Center(
-      //         child: Text(
-      //           "+",
-      //           style: TextStyle(
-      //               fontSize: 32,
-      //               fontWeight: FontWeight.w400,
-      //               color: Colors.white),
-      //         ),
-      //       )),
-      // ),
       floatingActionButton: Stack(children: [
         Positioned(
           bottom: 34,
@@ -157,22 +130,39 @@ class _MainPageState extends State<MainPage> {
         Positioned(
           bottom: 40,
           left: 165,
-          child: Container(
-              height: 72,
-              width: 72,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.C_8687E7,
-              ),
-              child: Center(
-                child: Text(
-                  "+",
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white),
+          child: InkWell(
+            onTap: () {
+              showModalBottomSheet(
+                backgroundColor: AppColors.C_363636,
+                context: context,
+                builder: (context) {
+                  return AddTaskWidget(
+                    onNewTask: () {
+                      setState(() {
+                        _selectedIndex = 0;
+                      });
+                    },
+                  );
+                },
+              );
+            },
+            child: Container(
+                height: 72,
+                width: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.C_8687E7,
                 ),
-              )),
+                child: Center(
+                  child: Text(
+                    "+",
+                    style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  ),
+                )),
+          ),
         ),
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
