@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:up_todo/utils/time_utils.dart';
 
 import '../../database/local_database.dart';
 import '../../models/todo_model.dart';
 
-class AddTaskWidget extends StatefulWidget {
-  VoidCallback onNewTask;
+class UpdateTaskWidget extends StatefulWidget {
+  TodoModel todo;
+  VoidCallback onUpdatedTask;
 
-  AddTaskWidget({Key? key, required this.onNewTask}) : super(key: key);
+  UpdateTaskWidget({
+    Key? key,
+    required this.onUpdatedTask,
+    required this.todo,
+  }) : super(key: key);
 
   @override
-  State<AddTaskWidget> createState() => _AddTaskWidgetState();
+  State<UpdateTaskWidget> createState() => _UpdateTaskWidgetState();
 }
 
-class _AddTaskWidgetState extends State<AddTaskWidget> {
+class _UpdateTaskWidgetState extends State<UpdateTaskWidget> {
   final formKey = GlobalKey<FormState>();
   String newTitle = "";
   String newDescription = "";
-  DateTime? taskDay; // 02.11.2022 ----
-  TimeOfDay? taskTime; // ---------- 21:25
+  DateTime? taskDate;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +33,13 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(widget.todo.id.toString()),
             TextFormField(
+              initialValue: widget.todo.title,
               onSaved: (val) {
                 newTitle = val ?? "";
               },
+              style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Title',
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
@@ -44,6 +52,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
             ),
             const SizedBox(height: 12),
             TextFormField(
+              style: TextStyle(color: Colors.white),
+              initialValue: widget.todo.description,
               onSaved: (val) {
                 newDescription = val ?? "";
               },
@@ -59,51 +69,57 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
               ),
             ),
             const SizedBox(height: 12),
+            Text(
+              taskDate.toString() == "null"
+                  ? ""
+                  : TimeUtils.formatToMyTime(taskDate!),
+              style: TextStyle(color: Colors.white),
+            ),
             IconButton(
               onPressed: () async {
-                taskDay = await showDatePicker(
+                taskDate = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
+                  initialDate: DateTime.parse(widget.todo.date),
                   firstDate: DateTime(2020),
                   lastDate: DateTime(2300),
                 );
-                taskTime = await showTimePicker(
+                TimeOfDay? taskTime = await showTimePicker(
                   context: context,
-                  initialTime: TimeOfDay.now(),
+                  initialTime: TimeOfDay(
+                    minute: DateTime.parse(widget.todo.date).minute,
+                    hour: DateTime.parse(widget.todo.date).hour,
+                  ),
                 );
-                taskDay = DateTime(
-                  taskDay!.year,
-                  taskDay!.month,
-                  taskDay!.day,
+                taskDate = DateTime(
+                  taskDate!.year,
+                  taskDate!.month,
+                  taskDate!.day,
                   taskTime!.hour,
-                  taskTime!.minute,
+                  taskTime.minute,
                 );
+                setState(() {});
               },
               icon: Icon(
                 Icons.calendar_month,
                 color: Colors.white,
               ),
             ),
-            Text(
-              taskDay.toString(),
-              style: TextStyle(color: Colors.white),
-            ),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    formKey.currentState?.save();
-                    var newTodo = TodoModel(
-                      title: newTitle,
-                      description: newDescription,
-                      date: taskDay.toString(),
-                      priority: "priority",
-                      isCompleted: 0,
-                    );
-                    LocalDatabase.insertToDatabase(newTodo);
-                    widget.onNewTask();
-                    Navigator.pop(context);
-                  },
-                  child: Text("Add")),
+            ElevatedButton(
+              onPressed: () {
+                formKey.currentState?.save();
+                var newTodo = TodoModel(
+                  id: widget.todo.id,
+                  title: newTitle,
+                  description: newDescription,
+                  date: taskDate.toString(),
+                  priority: "priority",
+                  isCompleted: 0,
+                );
+                LocalDatabase.updateTaskById(newTodo);
+                widget.onUpdatedTask();
+                Navigator.pop(context);
+              },
+              child: Text("Update"),
             )
           ],
         ),
