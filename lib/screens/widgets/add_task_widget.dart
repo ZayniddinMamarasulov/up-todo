@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:up_todo/screens/widgets/category_picker.dart';
+import 'package:up_todo/utils/colors.dart';
 
+import '../../database/category.dart';
 import '../../database/local_database.dart';
 import '../../models/todo_model.dart';
 
@@ -18,6 +22,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
   String newDescription = "";
   DateTime? taskDay; // 02.11.2022 ----
   TimeOfDay? taskTime; // ---------- 21:25
+  int categoryId = -1; // ---------- 21:25
 
   @override
   Widget build(BuildContext context) {
@@ -59,49 +64,105 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
               ),
             ),
             const SizedBox(height: 12),
-            IconButton(
-              onPressed: () async {
-                taskDay = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2020),
-                  lastDate: DateTime(2300),
-                );
-                taskTime = await showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                );
-                taskDay = DateTime(
-                  taskDay!.year,
-                  taskDay!.month,
-                  taskDay!.day,
-                  taskTime!.hour,
-                  taskTime!.minute,
-                );
-              },
-              icon: Icon(
-                Icons.calendar_month,
-                color: Colors.white,
-              ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    taskDay = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2300),
+                    );
+                    taskTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    taskDay = DateTime(
+                      taskDay!.year,
+                      taskDay!.month,
+                      taskDay!.day,
+                      taskTime!.hour,
+                      taskTime!.minute,
+                    );
+                  },
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: Colors.white,
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          backgroundColor: AppColors.C_363636,
+                          content: CategoryPicker(
+                            onSelected: (index) {
+                              categoryId = index;
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.label,
+                      color: Colors.white,
+                    ))
+              ],
             ),
-            Text(
-              taskDay.toString(),
-              style: TextStyle(color: Colors.white),
+            Row(
+              children: [
+                Text(
+                  taskDay.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(width: 24),
+                categoryId != -1
+                    ? Text(
+                        TodoCategory.categories[categoryId].name,
+                        style: TextStyle(color: Colors.white),
+                      )
+                    : Container(),
+              ],
             ),
             Center(
               child: ElevatedButton(
                   onPressed: () {
                     formKey.currentState?.save();
-                    var newTodo = TodoModel(
-                      title: newTitle,
-                      description: newDescription,
-                      date: taskDay.toString(),
-                      priority: "priority",
-                      isCompleted: 0,
-                    );
-                    LocalDatabase.insertToDatabase(newTodo);
-                    widget.onNewTask();
-                    Navigator.pop(context);
+                    if (newTitle.isNotEmpty &&
+                        newDescription.isNotEmpty &&
+                        taskDay != null &&
+                        categoryId != -1) {
+                      var newTodo = TodoModel(
+                        title: newTitle,
+                        description: newDescription,
+                        date: taskDay.toString(),
+                        categoryId: categoryId,
+                        priority: 0,
+                        isCompleted: 0,
+                      );
+                      LocalDatabase.insertToDatabase(newTodo);
+                      widget.onNewTask();
+                      Navigator.pop(context);
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Oshibka qildin"),
+                          content: Text("Hamasn toldrin"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Chundm"),
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   },
                   child: Text("Add")),
             )

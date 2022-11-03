@@ -27,6 +27,7 @@ class _MainPageState extends State<MainPage> {
     ];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _pages[_selectedIndex],
       backgroundColor: Colors.black,
       appBar: AppBar(

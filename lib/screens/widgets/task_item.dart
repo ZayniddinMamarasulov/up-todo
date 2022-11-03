@@ -45,10 +45,12 @@ class TaskItem extends StatelessWidget {
                       fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  TimeUtils.formatToMyTime(DateTime.parse(model!.date)),
-                  style: TextStyle(color: Colors.white),
-                ),
+                model!.date != "null"
+                    ? Text(
+                        TimeUtils.formatToMyTime(DateTime.parse(model!.date)),
+                        style: TextStyle(color: Colors.white),
+                      )
+                    : Text(""),
               ],
             ),
             IconButton(

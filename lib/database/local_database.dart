@@ -36,6 +36,7 @@ class LocalDatabase {
             ${TodoFields.title} $textType, 
             ${TodoFields.description} $textType, 
             ${TodoFields.date} $textType,
+            ${TodoFields.categoryId} $intType,
             ${TodoFields.priority} $textType,
             ${TodoFields.isCompleted} $boolType
             )
@@ -70,6 +71,7 @@ class LocalDatabase {
       TodoFields.id,
       TodoFields.title,
       TodoFields.description,
+      TodoFields.categoryId,
       TodoFields.date
     ]);
 
@@ -94,7 +96,10 @@ class LocalDatabase {
         TodoFields.id,
         TodoFields.title,
         TodoFields.description,
-        TodoFields.date
+        TodoFields.date,
+        TodoFields.priority,
+        TodoFields.categoryId,
+        TodoFields.isCompleted
       ]);
 
       var list = listOfTodos.map((e) => TodoModel.fromJson(e)).toList();

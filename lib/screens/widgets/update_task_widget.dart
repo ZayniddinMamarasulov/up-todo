@@ -112,7 +112,8 @@ class _UpdateTaskWidgetState extends State<UpdateTaskWidget> {
                   title: newTitle,
                   description: newDescription,
                   date: taskDate.toString(),
-                  priority: "priority",
+                  categoryId: 0,
+                  priority: 0,
                   isCompleted: 0,
                 );
                 LocalDatabase.updateTaskById(newTodo);
