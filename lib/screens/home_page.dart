@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       return TaskItem(
-                        model: snapshot.data?[index],
+                        model: snapshot.data![index],
                         onDeleted: () {
                           setState(() {});
                         },

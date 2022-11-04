@@ -37,8 +37,8 @@ class LocalDatabase {
             ${TodoFields.description} $textType, 
             ${TodoFields.date} $textType,
             ${TodoFields.categoryId} $intType,
-            ${TodoFields.priority} $textType,
-            ${TodoFields.isCompleted} $boolType
+            ${TodoFields.priority} $intType,
+            ${TodoFields.isCompleted} $intType
             )
             ''');
       },
@@ -65,7 +65,7 @@ class LocalDatabase {
     return updatedTask.copyWith(id: id);
   }
 
-  static Future<List<TodoModel>> getList() async {
+  /*static Future<List<TodoModel>> getList() async {
     var database = await getInstance.getDb();
     var listOfTodos = await database.query(tableName, columns: [
       TodoFields.id,
@@ -78,7 +78,7 @@ class LocalDatabase {
     var list = listOfTodos.map((e) => TodoModel.fromJson(e)).toList();
 
     return list;
-  }
+  }*/
 
   static Future<List<TodoModel>> getTaskByTitle({String title = ''}) async {
     var database = await getInstance.getDb();

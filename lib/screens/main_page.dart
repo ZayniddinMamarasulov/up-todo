@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:up_todo/screens/home_page.dart';
-import 'package:up_todo/screens/screen_1.dart';
 import 'package:up_todo/screens/widgets/add_task_widget.dart';
 import 'package:up_todo/utils/colors.dart';
 import 'package:up_todo/utils/images.dart';
@@ -20,7 +19,6 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
       HomePage(),
-      Screen1(),
       Container(),
       Container(),
       Container(),
@@ -134,15 +132,23 @@ class _MainPageState extends State<MainPage> {
           child: InkWell(
             onTap: () {
               showModalBottomSheet(
+                isScrollControlled: true,
                 backgroundColor: AppColors.C_363636,
                 context: context,
                 builder: (context) {
-                  return AddTaskWidget(
-                    onNewTask: () {
-                      setState(() {
-                        _selectedIndex = 0;
-                      });
-                    },
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: AddTaskWidget(
+                        onNewTask: () {
+                          setState(() {
+                            _selectedIndex = 0;
+                          });
+                        },
+                      ),
+                    ),
                   );
                 },
               );
