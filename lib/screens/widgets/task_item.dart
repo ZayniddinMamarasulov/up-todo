@@ -11,12 +11,14 @@ class TaskItem extends StatelessWidget {
   TodoModel model;
   final VoidCallback onDeleted;
   final VoidCallback onSelected;
+  final ValueChanged<TodoModel> onCompleted;
 
   TaskItem({
     Key? key,
     required this.model,
     required this.onDeleted,
     required this.onSelected,
+    required this.onCompleted,
   }) : super(key: key);
 
   @override
@@ -32,15 +34,23 @@ class TaskItem extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
         child: Row(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  )),
-              height: 20,
-              width: 20,
+            InkWell(
+              onTap: () {
+                onCompleted(model);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: model.isCompleted == 1
+                        ? Colors.green
+                        : Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
+                    )),
+                height: 20,
+                width: 20,
+              ),
             ),
             SizedBox(width: 12),
             Column(
