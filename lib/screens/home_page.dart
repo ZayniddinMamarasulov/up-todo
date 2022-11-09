@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget todayTodos() {
     return ExpansionTile(
+      initiallyExpanded: true,
       iconColor: Colors.white,
       title: Text(
         'Uncompleted'.tr(),
@@ -140,6 +141,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget completedTodos() {
     return ExpansionTile(
+      initiallyExpanded: true,
       iconColor: Colors.white,
       title: Text(
         'Completed'.tr(),

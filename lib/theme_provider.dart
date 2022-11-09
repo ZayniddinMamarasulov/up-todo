@@ -13,4 +13,6 @@ class ThemeProvider extends ChangeNotifier {
   getIsLight() {
     return _isLight;
   }
+
+
 }
